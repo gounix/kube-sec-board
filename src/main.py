@@ -2,6 +2,7 @@ import gc
 from flask import Flask
 import os
 import threading
+from time import sleep
 
 from configauditreport import configauditreport
 from ticket import ticket
@@ -15,6 +16,8 @@ header2 = "##"
 
 included_list, excluded_list = [], []
 port_number = 9990
+# time to wait for the vulnerability report to be created
+vuln_sleeptime = 300
 
 app = Flask(__name__)
 
@@ -186,6 +189,10 @@ def vuln_handler():
     for namespace in obj.watch_namespaces("vulnerabilityreports"):
         if not handle_namespace(namespace):
             continue
+
+        # vulnerability reports can take up to 3 minutes to complete
+        # the delete event comes first, after three minutes the create event, meanwhile the ticket wil be closed and reopened
+        sleep(vuln_sleeptime)
 
         tick_vuln = ticket(
             kanboard_url,
