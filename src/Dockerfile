@@ -1,4 +1,5 @@
-FROM prive.gounix.nl/docker.io/library/python:3.14.2-slim
+ARG PYVERSION=3.14.2
+FROM docker.io/library/python:${PYVERSION}-slim
 
 WORKDIR /usr/src/app
 
